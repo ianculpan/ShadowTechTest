@@ -11,14 +11,19 @@ class ImportBooks extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'import:book-data {--f|file= : CSV file name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Import book data from csv';
+
+    /**
+     * @var string
+     */
+    protected $fileName = "";
 
     /**
      * Create a new command instance.
@@ -35,8 +40,32 @@ class ImportBooks extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
+
+        $this->getFileName();
         return 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        if (!$this->option('file')) {
+            $this->error('You need to supply a file name.');
+            throw new \Symfony\Component\Console\Exception\RuntimeException;
+        } else {
+            $this->setFileName($this->option('file'));
+        }
+        return $this->fileName;
+    }
+
+    /**
+     * @param string $fileName
+     */
+    public function setFileName(string $fileName): void
+    {
+        $this->fileName = $fileName;
     }
 }

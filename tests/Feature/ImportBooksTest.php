@@ -8,15 +8,12 @@ use Tests\TestCase;
 
 class ImportBooksTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
+    /** @test */
+    public function it_will_throw_an_exception_with_no_file()
+    {
+        $this->expectException(\Symfony\Component\Console\Exception\RuntimeException::class);
+        $this->artisan('import:book-data');
     }
 }
