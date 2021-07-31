@@ -43,7 +43,16 @@ class ImportBooks extends Command
     public function handle(): int
     {
 
+        //Call the getter as this will lazy load and check the filename.
         $this->getFileName();
+        $this->info("Book data import");
+
+        //Confirmation message.
+        if (!$this->confirm('Do you really want to import book data?')) {
+            $this->warn("Import cancelled");
+            return 1;
+        }
+
         return 0;
     }
 

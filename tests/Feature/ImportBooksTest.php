@@ -16,4 +16,26 @@ class ImportBooksTest extends TestCase
         $this->expectException(\Symfony\Component\Console\Exception\RuntimeException::class);
         $this->artisan('import:book-data');
     }
+
+    /** @test */
+    public function it_will_cancel_an_import()
+    {
+        $this->artisan('import:book-data -f books.csv')
+            ->expectsConfirmation('Do you really want to import book data?', 'no')
+            ->expectsOutput('Import cancelled')
+            ->doesntExpectOutput('Book data imported')
+            ->assertExitCode(1);
+    }
+
+    /** @test */
+    public function it_will_ask_to_skip_headers()
+    {
+        $this->artisan('import:book-data -f books.csv')
+            ->expectsConfirmation('Do you really want to import book data?', 'yes')
+            ->expectsConfirmation('Does the first line contain headers?', 'yes')
+            ->expectsOutput('Skipping first line')
+            ->assertExitCode(0);
+    }
+
+
 }
