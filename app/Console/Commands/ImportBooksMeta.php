@@ -2,7 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Books;
+use App\Models\BooksMeta;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class ImportBooksMeta extends Command
 {
@@ -61,10 +64,52 @@ class ImportBooksMeta extends Command
         } else {
             $this->skipFirstLine = false;
         }
-        return 0;
+        return $this->processInputData() ? 0 : 1;
     }
 
-    /**
+    private function processInputData(): bool
+    {
+        if (Storage::disk('local')->exists($this->getFileName())) {
+            $fileData = Storage::disk('local')->get($this->getFileName());
+            //Unsure as to why the Flysystem does not have a streaming function to read a line.
+            //Using this Facade as it is filesystem independent.
+            $fileData = explode(PHP_EOL, $fileData);
+            foreach ($fileData as $line) {
+                if ($this->skipFirstLine) {
+                    $this->skipFirstLine = false;
+                    continue;
+                }
+                $this->loadData($line);
+            }
+        } else {
+            $this->error("Import file not found");
+            return false;
+        }
+        $this->info('Book meta data imported');
+        return true;
+    }
+
+    private function loadData($line)
+    {
+        $data = explode(',', $line);
+
+        if (count($data) == 4) {
+            //if we were to collect the field names we would
+            // also be able to run a Book::insert($data);
+            $bookMeta = new BooksMeta();
+            $bookMeta->isbn = $data[0];
+            $bookMeta->original_publication_year = $data[1];
+            $bookMeta->language_code = $data[2];
+            $bookMeta->average_rating = $data[3];
+            try {
+                $bookMeta->saveOrFail();
+                $this->info('Record loaded : ' . $data[0]);
+            } catch (\Throwable $t) {
+                $this->warn('Record not processed ' . $line);
+            }
+        }
+    }
+        /**
      * @return string
      */
     public function getFileName(): string

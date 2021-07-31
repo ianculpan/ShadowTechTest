@@ -13,9 +13,9 @@ class CreateBooksMeta extends Migration
      */
     public function up()
     {
-        Schema::create('books_meta', function (Blueprint $table) {
+        Schema::create('books_metas', function (Blueprint $table) {
             $table->id();
-            $table->string('isbn');
+            $table->string('isbn')->index('idx_isbn')->unique();
             $table->string('original_publication_year');
             $table->string('language_code');
             $table->string('average_rating');
@@ -30,6 +30,6 @@ class CreateBooksMeta extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('books_meta');
+        Schema::dropIfExists('books_metas');
     }
 }
