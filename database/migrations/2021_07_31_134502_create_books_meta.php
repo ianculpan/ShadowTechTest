@@ -15,6 +15,10 @@ class CreateBooksMeta extends Migration
     {
         Schema::create('books_meta', function (Blueprint $table) {
             $table->id();
+            $table->string('isbn');
+            $table->string('original_publication_year');
+            $table->string('language_code');
+            $table->string('average_rating');
             $table->timestamps();
         });
     }

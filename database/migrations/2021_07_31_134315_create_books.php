@@ -15,6 +15,10 @@ class CreateBooks extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
+            $table->integer('books_count');
+            $table->string('isbn')->index('idx_isbn')->unique();
+            $table->string('authors');
+            $table->string('original_title');
             $table->timestamps();
         });
     }
