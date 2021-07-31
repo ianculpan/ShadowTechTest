@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\books;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class ImportBooks extends Command
 {
@@ -62,7 +64,51 @@ class ImportBooks extends Command
         } else {
             $this->skipFirstLine = false;
         }
-        return 0;
+
+        return $this->processInputData() ? 0 : 1;
+    }
+
+    private function processInputData(): bool
+    {
+        if (Storage::disk('local')->exists($this->getFileName())) {
+            $fileData = Storage::disk('local')->get($this->getFileName());
+            //Unsure as to why the Flysystem does not have a streaming function to read a line.
+            //Using this Facade as it is filesystem independent.
+            $fileData = explode(PHP_EOL, $fileData);
+            foreach ($fileData as $line) {
+                if ($this->skipFirstLine) {
+                    $this->skipFirstLine = false;
+                    continue;
+                }
+                $this->loadData($line);
+            }
+        } else {
+            $this->error("Import file not found");
+            return false;
+        }
+        $this->info('Book data imported');
+        return true;
+    }
+
+    private function loadData($line)
+    {
+        $data = explode(',', $line);
+
+        if (count($data) == 4){
+            //if we were to collect the field names we would
+            // also be able to run a Book::insert($data);
+            $book = new books();
+            $book->books_count = $data[0];
+            $book->isbn = $data[1];
+            $book->authors = $data[2];
+            $book->original_title = $data[3];
+            try{
+                $book->saveOrFail();
+                $this->info('Record loaded : '. $data[3]);
+            } catch (\Throwable $t){
+                $this->warn('Record not processed '.$line);
+            }
+        }
     }
 
     /**

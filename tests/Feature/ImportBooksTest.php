@@ -44,7 +44,7 @@ class ImportBooksTest extends TestCase
         $this->artisan('import:book-data -f books.csv')
             ->expectsConfirmation('Do you really want to import book data?', 'yes')
             ->expectsConfirmation('Does the first line contain headers?', 'yes')
-            ->expectsOutput('Book Data Imported');
+            ->expectsOutput('Book data imported');
 
         $tableName = (new Books())->getTable();
         $this->assertDatabaseHas($tableName, ['isbn'=> '439023483']);
