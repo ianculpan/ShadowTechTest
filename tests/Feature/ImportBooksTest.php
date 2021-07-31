@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\books;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -35,6 +36,19 @@ class ImportBooksTest extends TestCase
             ->expectsConfirmation('Does the first line contain headers?', 'yes')
             ->expectsOutput('Skipping first line')
             ->assertExitCode(0);
+    }
+
+    /** @test */
+    public function it_will_insert_into_the_database()
+    {
+        $this->artisan('import:book-data -f books.csv')
+            ->expectsConfirmation('Do you really want to import book data?', 'yes')
+            ->expectsConfirmation('Does the first line contain headers?', 'yes')
+            ->expectsOutput('Book Data Imported');
+
+        $tableName = (new Books())->getTable();
+        $this->assertDatabaseHas($tableName, ['isbn'=> '439023483']);
+        $this->assertDatabaseCount($tableName, 67);
     }
 
 

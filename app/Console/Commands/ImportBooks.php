@@ -24,6 +24,10 @@ class ImportBooks extends Command
      * @var string
      */
     protected $fileName = "";
+    /**
+     * @var bool
+     */
+    private $skipFirstLine;
 
     /**
      * Create a new command instance.
@@ -52,7 +56,12 @@ class ImportBooks extends Command
             $this->warn("Import cancelled");
             return 1;
         }
-
+        if ($this->confirm('Does the first line contain headers?')) {
+            $this->info("Skipping first line");
+            $this->skipFirstLine = true;
+        } else {
+            $this->skipFirstLine = false;
+        }
         return 0;
     }
 
