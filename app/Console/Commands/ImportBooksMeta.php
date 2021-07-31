@@ -46,7 +46,21 @@ class ImportBooksMeta extends Command
      */
     public function handle()
     {
+        //Call the getter as this will lazy load and check the filename.
         $this->getFileName();
+        $this->info("Book meta data import");
+
+        //Confirmation message.
+        if (!$this->confirm('Do you really want to import book meta data?')) {
+            $this->warn("Import cancelled");
+            return 1;
+        }
+        if ($this->confirm('Does the first line contain headers?')) {
+            $this->info("Skipping first line");
+            $this->skipFirstLine = true;
+        } else {
+            $this->skipFirstLine = false;
+        }
         return 0;
     }
 
