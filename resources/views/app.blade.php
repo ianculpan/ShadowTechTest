@@ -10,12 +10,21 @@
 <body>
 <div id="app">
     <div class="h-screen float-left w-1/6 bg-gray-400">
-        <ul>
-            <router-link class="p-2" to = "/">Search&nbsp;Books</router-link>
-            <router-link class="p-2" to = "/authorcount">Author&nbsp;Count</router-link>
+        <p class="items-center m-1 p-2 rounded-md bg-gray-200">Menu</p>
+        <ul class="min-w-full">
+            <li class="min-w-full mt-3 mb-3">
+                <router-link class="flex-auto min-w-full items-center m-1 p-2 rounded-md bg-gray-200" active-class="font-bold"
+                             to="/" exact>Search&nbsp;Books
+                </router-link>
+            </li>
+            <li class="min-w-full mt-3 mb-3">
+                <router-link class="min-w-full items-center m-1 p-2 rounded-md bg-gray-200" active-class="font-bold"
+                             to="/authorcount">Author&nbsp;Count
+                </router-link>
+            </li>
         </ul>
     </div>
-    <div class="bg-gray-200 flex w-5/6">
+    <div class="pl-2 bg-gray-200 flex w-5/6">
         <router-view></router-view>
     </div>
     <hr>
