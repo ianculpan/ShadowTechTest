@@ -15,6 +15,8 @@ composer install
 npm install
 npm run dev
 
+The csv import files should be loaded into the laravel ./storage/app/ folder.
+
 ## Example commands to import the data
 
 php artisan import:book-data -f books.csv
