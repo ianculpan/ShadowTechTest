@@ -51,5 +51,4 @@ class ImportBooksMetaTest extends TestCase
         $this->assertDatabaseCount($tableName, 99);
     }
 
-
 }

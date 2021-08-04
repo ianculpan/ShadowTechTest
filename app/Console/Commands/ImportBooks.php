@@ -90,11 +90,11 @@ class ImportBooks extends Command
         return true;
     }
 
-    private function loadData($line)
+    private function loadData($line): void
     {
         $data = explode(',', $line);
 
-        if (count($data) == 4){
+        if (count($data) == 4) {
             //if we were to collect the field names we would
             // also be able to run a Book::insert($data);
             $book = new books();
@@ -102,11 +102,11 @@ class ImportBooks extends Command
             $book->isbn = $data[1];
             $book->authors = $data[2];
             $book->original_title = $data[3];
-            try{
+            try {
                 $book->saveOrFail();
-                $this->info('Record loaded : '. $data[3]);
-            } catch (\Throwable $t){
-                $this->warn('Record not processed '.$line);
+                $this->info('Record loaded : ' . $data[3]);
+            } catch (\Throwable $t) {
+                $this->warn('Record not processed ' . $line);
             }
         }
     }
